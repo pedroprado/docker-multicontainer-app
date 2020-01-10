@@ -1,9 +1,9 @@
 version: '3'
 services:
     postgres:
-        image: 'postgres:lastest'
+        image: postgres
     redis:
-        image: 'redis:lastest'
+        image: redis
     server:
         build:
             context: ./server
@@ -13,6 +13,15 @@ services:
         volumes:
             - /app/node_modules
             - ./server:/app
+        environment: 
+            - REDIS_HOST = redis
+            - REDIS_PORT = 6379   #default port created by the image
+            - PGUSER = postgres  #this is the default user created by the image
+            - PGHOST = postgres
+            - PGDATABASE = postgres  #this is the default database created by the image
+            - PGPASSWORD = postgres_password #this is the default password created by the image
+            - PGPORT = 5432    #defaul port created by the image
+
 
 
         

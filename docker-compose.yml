@@ -4,12 +4,17 @@ services:
         image: postgres
     redis:
         image: redis
+    nginx:
+        restart: always    #this is a server, it must be always on!
+        build:
+            context: ./nginx
+            dockerfile: Dockerfile.dev
+        ports:
+            - '3000:80'
     api:
         build:
             context: ./server
             dockerfile: Dockerfile.dev
-        ports: 
-            - '3000:5000'
         volumes:
             - /app/node_modules
             - ./server:/app
@@ -21,9 +26,6 @@ services:
             - PGDATABASE = postgres  #this is the default database created by the image
             - PGPASSWORD = postgres_password #this is the default password created by the image
             - PGPORT = 5432    #defaul port created by the image
-
-
-
     client:
         build:
             context: ./client

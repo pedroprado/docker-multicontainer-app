@@ -4,25 +4,25 @@ services:
 
     #run tests over the Dev version
 before_install:
-    - docker build -f ./client/Dockerfile.dev -t pedroprado/react-tests ./client
+    - './.travis/main.sh'
+    - docker build -f ./client/Dockerfile.dev -t phsprado/react-tests ./client
 
     #phase of tests
 script:
-    - docker run -e CI=true pedroprado/react-tests npm test
+    - docker run -e CI=true phsprado/react-tests npm test
 
     #here we build the prod images (still in Travis)
 after_success:
-    - docker build -t pedroprado/complex-client ./client
-    - docker build -t pedroprado/complex-nginx ./nginx
-    - docker build -t pedroprado/complex-server ./server
-    - docker build -t pedroprado/complex-worker ./worker
-
+    - docker build -t phsprado/complex-client ./client
+    - docker build -t phsprado/complex-nginx ./nginx
+    - docker build -t phsprado/complex-server ./server
+    - docker build -t phsprado/complex-worker ./worker
     #phase of deploy images on Dockerhub
     #First, login to Dockerhub
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
     #push images to docker hub
-    - docker push pedroprado/complex-client
-    - docker push pedroprado/complex-nginx
-    - docker push pedroprado/complex-server
-    - docker push pedroprado/complex-worker
+    - docker push phsprado/complex-client
+    - docker push phsprado/complex-nginx
+    - docker push phsprado/complex-server
+    - docker push phsprado/complex-worker
 

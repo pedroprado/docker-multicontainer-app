@@ -4,7 +4,6 @@ services:
 
     #run tests over the Dev version
 before_install:
-    - './.travis/main.sh'
     - docker build -f ./client/Dockerfile.dev -t phsprado/react-tests ./client
 
     #phase of tests

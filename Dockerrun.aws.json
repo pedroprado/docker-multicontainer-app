@@ -1,0 +1,31 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions":[  
+        {
+            "name": "client",
+            "image": "phsprado/complex-client",
+            "hostname": "client",
+            "essential": false
+        },
+        {
+            "name": "nginx",
+            "image": "phsprado/complex-nginx",
+            "hostname": "nginx",
+            "essential": true
+        },
+        {
+            "name": "server",
+            "image": "phsprado/complex-server",
+            "hostname": "api",
+            "essential": false 
+            
+        },
+        {
+            "name": "worker",
+            "image": "phsprado/complex-worker",
+            "hostname": "worker",
+            "essential": false
+        }
+
+    ]
+}

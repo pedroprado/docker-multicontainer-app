@@ -2,32 +2,26 @@
 
 5.1.Dockering
 
-Figure 1: Example of multi-container application. This app contains three services: one react app, two node apps.
+This app contains three services: one react app, two node apps.
 
-In the image above we have a multi-service application. For dockering this app we need to set and Dockerfile do each service, and connect these containers using a docker compose file.
+For dockering this app we need to set and Dockerfile do each service, and connect these containers using a docker compose file.
 
 The structure pointed in the image above shows us that, in the docker-compose file, we need the following constraints:
-Reac app should connect to the Server ;
+```
+React app should connect to the Server ;
 Server should connect to Redis and Postgres;
 Worker should connect to Redis;
+```
+
 The docker compose file should reflect the constraints above;
 
 5.2.The role of nginx 
 Nginx have ONE JOB: to route the incoming requests from the browser to the React Server or to the Express Server (nginx looks to the path request). Thus, we need a service for nginx too.
 
-
-Figure 2: The role of Nginx. Requests that start with “/” go to React Server. Requests that start with “/api” go to Express Server. Nginx “chops off” the “/api” when a request that start with that comes in (it comes in “/api/values/all”, it  comes out from nginx “/values/all”).
+Requests that start with “/” go to React Server. Requests that start with “/api” go to Express Server. Nginx “chops off” the “/api” when a request that start with that comes in (it comes in “/api/values/all”, it  comes out from nginx “/values/all”).
 
 Nginx default.conf file
-For nginx to work with the proposed architecture, we must create a Service of nginx in the docker-compose file. For this nginx service to work, we have to config it properly, using the default.conf file shown below:
-
-
-Figure 3: Rules of default.conf file for Nginx service. “upstream” service means a service that is “behind nginx” (a service that receives a request routed from nginx), like shown in Figure 2.
-
-
-
-Figure 4: configuration of nginx (default.conf). This file is used to create a custom image of nginx.
-
+For nginx to work with the proposed architecture, we must create a Service of nginx in the docker-compose file. For this nginx service to work, we have to config it properly, using the default.conf file (this file is used to create a custom image of nginx).
 
 Web-socket problem
 Every time a React app starts in DEVELOPMENT MODE, it wants to keep a active connection with the Nginx Server.
@@ -47,21 +41,14 @@ This can be made adding the configuration needed to the default.conf file.
 A multi-container application must not have a phase where ElasticBeanstalk builds the production image (it is to slow!).
 
 
-Figure 5: In a multi-container app it is recommended to have the CI server (Travis, in this case) to build the production image. The app server (ElasticBeanstalk) should only “pull” this images, and not build it!
-
-
-Figure 6: Travis CI configuration file for the multi-container application.
-
+In a multi-container app it is recommended to have the CI server (Travis, in this case) to build the production image. The app server (ElasticBeanstalk) should only “pull” this images, and not build it!
 
 5.4.Multicontainer application deploy to Amazon Elastic Bean Stalk
-
 When we have a single container application (with ONE dockerfile), Amazon EB is capable of looking to a single Dockerfile and build and run the image.
+
 That does not happen when we have a multicontainer application. That’s why we have to build  the images before, and push the built images to EB. EB is not capable of reading multiple dockerfiles (that exist in a multicontainer application).
 
 We need to tell EB where to pull the images and how to connect them. For that we use Dockerrun.aws.json file.
-
-
-Figure 7: Dockerrun.aws.json file similarities with Docker-compose file. Docker-compose is used for “Dev purposes”. Dockerrun.aws is use for prod purposes in Aws. Inside the Dockerrun.aws file we define “task definitions”.
 
 Task definitions in Amazon ECS (Elastic Container Service)
 Amazon EB does not really know how to work with containers. EB delegates the hosting services to ECS.
@@ -69,7 +56,7 @@ ECS works with “Task Definition”, which are files that tell ECS how to run c
 Documentation: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html
 
 
-Dockerrun file should look like:
+Dockerrun.aws.json file should look like this:
 ```json{
     "AWSEBDockerrunVersion": 2,
     "containerDefinitions":[  

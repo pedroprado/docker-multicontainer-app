@@ -25,6 +25,13 @@ class Fib extends Component {
     });
   }
 
+  setIndex = (value) => {
+
+    // if(!isNaN(parseInt(value))){
+      this.setState({index: value})
+    // }
+  }
+
   handleSubmit = async event => {
     event.preventDefault();
 
@@ -58,8 +65,9 @@ class Fib extends Component {
         <form onSubmit={this.handleSubmit}>
           <label>Enter your index:</label>
           <input
+            type="number"
             value={this.state.index}
-            onChange={event => this.setState({ index: event.target.value })}
+            onChange={event =>  this.setIndex(event.target.value)}
           />
           <button>Submit</button>
         </form>
